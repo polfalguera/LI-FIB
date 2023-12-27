@@ -1,0 +1,180 @@
+
+--------------------------------------------------------------------------------------------------
+Logic in Computer Science, November 2nd, 2022. Time: 1h30min. No books or lecture notes allowed.
+--------------------------------------------------------------------------------------------------
+-Insert your answers on the dotted lines ... below, and only there.
+-Do NOT modify the problems or the @nota lines.
+-When finished, upload this file with the same name: exam.txt
+-Use the text symbols:     &     v    -       ->          |=        A       E
+   for                    AND   OR   NOT   IMPLIES   "SATISFIES"  FORALL  EXISTS  etc.,  like in:
+   I  |=  p & (q v -r)     (the interpretation I satisfies the formula p & (q v -r)  ).
+   You can write subindices using "_". For example write x_i to denote x-sub-i.
+--------------------------------------------------------------------------------------------------
+
+
+Problem 1. (3 points).                                     @n@nota1:
+
+1a) Given two propositional formulas F and G, is it true that F -> G is tautology and
+    F satisfiable, then G is satisfiable?
+    Prove it using only the formal definitions of propositional logic.
+	
+	F satisfiable			ssi [definition of satisfiable]
+	F has a model			ssi [definition of model]
+	EI, I |= F				ssi [definition of |=]
+	EI, I |= F and I |= F -> G    ssi [definition of tautology, F->G is a tautology]
+	EI, I |= F and I |= -F v G	ssi [definition of ->]
+	EI, eval_I(F) = 1 and eval_I(-F v G) = 1		ssi [definition of |=]
+	EI, eval_I(F) = 1 and max(eval_I(-F),eval_I(G)) = 1		ssi [definition of eval_I(v)]
+	EI, eval_I(F) = 1 and max(1-eval_I(F),eval_I(G)) = 1		ssi [definition of eval_I(-)]
+	EI, eval_I(F) = 1 and max(0,eval_I(G)) = 1		ssi [simplification]
+	EI, eval_I(G) = 1			ssi [aritmetic max()]
+	EI, I |= G				ssi [definition of evalutaion]
+	EI, I is model of G		ssi [definition of |=]
+	G is satisfiable			ssi [definition of model]
+
+
+1b) Give an example of formulas F1, F2, and F3 such that F1 & F2 & F3 is unsatisfiable
+    and any conjuction of two of then is satisfiable.
+
+	F1 = (p v q)
+	F2 = -p
+	F3 = -q
+	
+	The interpretation I(p) = 0 and I(q) = 1 satisfies F1 & F2
+	The interpretation I(p) = 0 and I(q) = 0 satisfies F2 & F3
+	The interpretation I(p) = 1 and I(q) = 0 satisfies F1 & F3
+	But F1 & F2 & F3 is unsatisfiable
+
+
+--------------------------------------------------------------------------------------------------
+
+Problem 2. (2.5 points).                                   @n@nota2:
+
+
+We define the problem NEG-SAT as follows:
+given a propositional formula F, to determine whether there exists I such that I |= -F.
+
+a) Describe a linear-time algorithm for NEG-SAT when the input formula
+   is in CNF. Justify its correctness and its cost.
+
+   Hint: you can assume that, given a clause C, detecting if
+         C contains contradictory literals, i.e., p and -p for
+         some variable p, can be done in linear time.
+
+Let F be the input CNF. The idea is trying to find an I so it salsifies F, that way we get I |= -F.
+If F is the empty set of clauses, then F is a tautology, so we return NO. Otherwise, we take a clause 
+C of F. If there are in C two contradictory literals (p and -p), then we know that clause is a tautology
+so it must be discarted and keep going for the rest of F. Otherwise, C is not a tautology so that means
+we can find an I so that it falsifies the clause. As the formula F is a conjunction of clauses, falsifying
+the non-tautology clasue is enough to falsify F.
+
+The algorithm is correct because we have found and interpretation that falsifies F. Since detecting contradictory
+literals in a given clause C can be done in linear time, in the worst case the cost is n^2.	
+
+b) Let us call CNF-NEG-SAT the linear-time algorithm of the previous
+   exercise for NEG-SAT when the input formula is in CNF:
+
+     Algorithm CNF-NEG-SAT
+     ---------------------
+
+     Input: propositional formula F in CNF
+
+     Output:
+       YES if there exists I such that I |= -F,
+       NO otherwise
+
+
+   Consider now the following algorithm for solving the SAT problem for
+   arbitrary formulas:
+
+     Algorithm MY-SAT
+     ----------------
+
+     Input: propositional formula F
+
+     Output:
+       YES if there exists I such that I |= F,
+       NO otherwise
+
+     Step 1. G := Tseitin_transformation_of(-F)
+     Step 2. return CNF-NEG-SAT(G)
+
+   The algorithm MY-SAT is NOT correct. Prove it giving a counterexample.
+
+As we can see, a Tseitin transformation is applyied to -F, so the resulting formula will
+be of the form p & G' where G' is some CNF and p is the auxiliary propositional variable
+representing the root of the formula tree. So, what we have here is that no matter how
+G' is, there will always be an interpretation I so that I(p) = 0, so CNF-NEG-SAT call will 
+always return YES, because there is actually an I that falsifies G. For example, given the
+formula (q & -q), which is unsatisfiable, MY-SAT(F) will return YES.
+
+--------------------------------------------------------------------------------------------------
+
+Problem 3. (2.5 points).                                   @n@nota3:
+
+3) Given S a set of clauses (CNF) over n propositional symbols,
+   and Resolution the deductive rule:
+   
+                 p v C          -p v D
+		 ---------------------      for some symbol p
+		         C v D
+
+3a) Given n propositional symbols, how many different clauses are there (seen as sets of literals)?
+
+2^(2^n) = 4^n.
+
+Explanation:
+If we consider S a set of k clauses, we can have an array of size k so that if for an given i between 1 and
+k, array[i] = 1 means we are taking clause_i in a subset and 0 means the opposite. That would give us an easy
+way to represent all possible subsets of S, which are 2^n.
+
+Then, we have that for each clause C, literals can appear in positive or negetive, so having n symbols which can
+be positive or negative means we have 2^n different possibilities.
+
+Conclusion: We have 2^k different subsets of 2^n possibilities each substet => 2^2^n = 4^n.
+
+
+3b) Is Resolution a correct deductive rule:  (p v C) & (-p v D) |= C v D  for any p, C, D?
+    Prove it.
+
+Let I be a model of (p v C) & (-p v D). There are two cases:
+	1. I(p) = 1 then I |= (p v C) & (-p v D) => I |= -p v D => I |= D => I |= C v D
+	2. I(p) = 0 then I |= (p v C) & (-p v D) => I |=  p v C => I |= C => I |= C v D
+
+3c) Can Resolution be used to decide SAT? Briefly explain why or why not?
+
+Yes. Res(S) is the closure under Resoluction of an initial set of clauses S. It can be computed in a 
+finite time since it doesn't add symbols to the formula and the number of symbols used is finite.
+
+Since resolution is correct and refutionally complete, we can compute all subsets of Res(S) and if
+the empty clause belongs to it, then we know S is unsatisfiable. Otherwise, S is satisfiable.
+
+
+--------------------------------------------------------------------------------------------------
+
+Problem 4. (2 points).                                     @n@nota4: 
+
+4) Consider the cardinality constraint x1 + x2 + x3 + x4 + x5 >= 2 (expressing that at
+   least 2 of the propositional symbols {x1, x2, x3, x4, x5} are true).
+
+4a) Write the clauses needed to encode this constraint using no auxiliary variables.
+
+Answer:
+	x1 v x2 v x3 v x4
+	x1 v x2 v x3 v    v x5
+	x1 v x2 v    v x4 v x5
+	x1 v    v x3 v x4 v x5
+	   v x2 v x3 v x4 v x5
+
+
+4b) In general, in terms of n and k, how many clauses are needed to encode a cardinality
+    constraint x1 + . . . + xn >= k using no auxiliary variables? (give no explanations here).
+
+[n! / ((n-k+1))!*(k-1)!))]
+
+
+4c) Write at least two names of any other encoding you know for cardinality constraints,
+    encodings that do use auxiliary variables.
+
+Ladder encoding, Sorting networks, Cardinality networks.
+

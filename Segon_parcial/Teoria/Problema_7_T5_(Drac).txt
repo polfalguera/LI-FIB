@@ -1,0 +1,101 @@
+7. (Dificultat 3) (Schöning, Exercise 85) Formalitza els següents fets:
+	(a) “Tot drac està feliç si tots els seus fills poden volar"
+	(b) “Els dracs verds poden volar”
+	(c) “Un drac és verd si és fill d’almenys un drac verd”
+
+%% SOL %%
+
+(a) Ax ( Ay ( fillde(x,y) ==> vola(y) )  ==> esfeliç(x) )
+
+(b) Ax ( esverd(x) ==> vola(x) )
+
+(c) Ax ( Ey ( fill(y,x) & esverd(y) ) => esverd(x) )
+
+%% STATEMENT %%
+
+Demostra per resolució que la conjuncióo de (a), (b) i (c) implica que:
+	(d) “Tots els dracs verds són feliços”
+	
+	esfeliç(x)   = “x és feliç”
+	fillde(x, y) = “un fill de x és y”
+	esverd(x)    = “x és verd”
+	vola(x)      = “x pot volar”
+
+%% SOL %%
+
+a & b & c => d |equivalent| a & b & c |= d	SSI
+a & b & c & -d INSAT				SSI
+S = formaCasual(a & b & c & -d) INSAT		SSI
+[] pertany a ResFact(S)
+
+(d) Ax ( esverd(x) ==> esfeliç(x) )
+
+-(d) -Ax ( esverd(x) ==> esfeliç(x) ) |->| Ex -( esverd(x) ==> esfeliç(x) ) |->| Ex -( -esverd(x) v esfeliç(x) ) |->| Ex (esverd(x) & -esfeliç(x) )
+
+PASSEM TOTS ELS PREDICATS A FORMA CAUSAL:
+
+(a) Ax ( -Ay ( -fillde(x,y) v vola(y) ) v esfeliç(x) )
+
+1. Ax ( Ey -( -fillde(x,y) v vola(y) ) v esfeliç(x) )
+   Ax ( Ey  ( fillde(x,y) & -vola(y) ) v esfeliç(x) )
+
+4. Ax ( ( fillde(x,fy(x)) & -vola(fy(x)) ) v esfeliç(x) )
+
+6. ( fillde(x,fy(x)) v esfeliç(x) ) & ( -vola(fy(x)) v esfeliç(x) ) 
+
+(a1) fillde(x,fy(x)) v esfeliç(x)
+(a2) -vola(fy(x)) v esfeliç(x)
+
+(b) Ax ( -esverd(x) v vola(x) )
+
+(b1) -esverd(x) v vola(x)
+
+(c) Ax ( -Ey ( fill(y,x) & esverd(y) ) v esverd(x) )
+1. Ax ( Ay -( fill(y,x) & esverd(y) ) v esverd(x) ) |->| Ax ( Ay ( -fill(y,x) v -esverd(y) ) v esverd(x) )
+5. Ax Ay ( -fill(y,x) v -esverd(y) v esverd(x))
+
+(c1) -fill(y,x) v -esverd(y) v esverd(x)
+
+-(d) Ex (esverd(x) & -esfeliç(x) )
+
+-(d1) esverd(cx)
+-(d2) -esfeliç(cx)
+
+
+JUNTEM LES CLAÙSULES:
+
+(a1) fillde(x,fy(x)) v esfeliç(x)
+(a2) -vola(fy(x)) v esfeliç(x) 
+(b1) -esverd(x) v vola(x)
+(c1) -fillde(y,x) v -esverd(y) v esverd(x)
+-(d1) esverd(cx)
+-(d2) -esfeliç(cx)
+
+RESFACT(S):
+					AMB:			MGU:
+1. vola( cx )				res d1 amb b1		{x=cx}
+2. fillde( cx , fy(cx) )		res a1 amb d2		{x=cx}
+3. -esverd( cx ) v esverd( fy(cx) )	res 2. amb c1		{x=fy(cx),y=cx}
+4. esverd( fy(cx) )			res 3. amb d1		{}
+5. -vola( fy(cx) )			res a2 amb d2		{x=cx}
+6. -esverd( fy(cx) )			res 5. amb b1		{x=f(cx)}
+7. []					res 4. amb 6.		{}	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

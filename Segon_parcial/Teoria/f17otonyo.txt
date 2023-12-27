@@ -1,0 +1,49 @@
+Exercise 6. Consider the following Prolog program and its well-known behaviour:
+	animals([dog,lion,elephant]).
+	bigger(lion,cat).
+	faster(lion,cat).
+	better(X,Y):- animals(L), member(X,L), bigger(X,Y), faster(X,Y).
+
+		?- better(U,V).
+		U = lion
+		V = cat
+
+In Prolog, a list like [dog,lion,elephant] is in fact represented as a term
+	f(dog,f(lion,f(elephant,emptylist))).
+Therefore, we assume that the program also contains the standard clauses for member like this:
+	member( E, f(E,_) ).
+	member( E, f(_,L) ):- member(E,L).
+Express the program as a set of first-order clauses P and prove that ∃u ∃v better(u, v) is a logical consequence
+of P. Which values did the variables u and v get (by unification) in your proof? Only write the steps and
+values. No explanations.
+
+better(X,Y):- animals(L), member(X,L), bigger(X,Y), faster(X,Y).	|->|
+better(X,Y) <= animals(L) & member(X,L) & bigger(X,Y) & faster(X,Y)	|->|
+better(X,Y) v -(animals(L) & member(X,L) & bigger(X,Y) & faster(X,Y))	|->|
+better(X,Y) v -animals(L) v member(X,L) v -bigger(X,Y) v -faster(X,Y)	[  ]
+
+P CLAUSES:
+
+1. animals(f(dog,f(lion,f(elephant,emptylist))))
+2. bigger(lion,cat)
+3. faster(lion,cat)
+4. better(X,Y) v -animals(L) v -member(X,L) v -bigger(X,Y) v -faster(X,Y)
+5. member( E, f(E,_) )
+6. member( E, f(_,L) ) V -member(E,L)
+7. -better(u,v)
+
+P |= ( ∃u ∃v better(u,v) ) 		SSI 
+P & -( ∃u ∃v better(u,v) ) INSAT	SSI
+S = P U -better(u,v)	   INSAT	SSI
+[] pertany a ResFact(S)
+
+RESOLUTION:
+								WITH:			MGU:
+8. -animals(L) v -member(X,L) v -bigger(X,Y) v -faster(X,Y)	4. amb 7.		{u=X,v=Y}
+9. -member(X,f(dog,f(lion...) v -bigger(X,Y) v -faster(X,Y)	1. amb 8.		{L=f(dog,f(lion,f(elephant,emptylist)))} 
+10. -member(X,f(lion,f(el...) v -bigger(X,Y) v -faster(X,Y)	6. amb 9.		{E=X,L=f(lion,f(elephant,emptylist))}
+11. -bigger(lion,Y) v -faster(lion,Y)				5. amb 10.		{X=lion,E=lion,_=f(elephant,emptylist)}
+12. -faster(lion,cat)						2. amb 7.		{Y=cat}
+13. []								3. amb 12.		{}
+
+VALUES: {u=X=lion} & {v=Y=cat}

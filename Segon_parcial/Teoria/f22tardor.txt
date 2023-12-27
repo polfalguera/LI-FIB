@@ -1,0 +1,172 @@
+--------------------------------------------------------------------------------------------------
+Logic in Computer Science, January 16th, 2023. Time: 2h30min. No books or lecture notes allowed.
+--------------------------------------------------------------------------------------------------
+Note on evaluation: eval(propositional logic) = max(eval(Problems 1,2,3), eval(partial exam))
+                    eval(first-order logic)   = eval(Problems 4,5,6).
+
+-Insert your answers on the dotted lines ... below, and only there.
+-Do NOT modify the problems or the @nota lines or the @answer lines
+-When finished, upload this file with the same name: exam.txt
+-Use the text symbols:     &     v    -       ->          |=        A       E
+   for                    AND   OR   NOT   IMPLIES   "SATISFIES"  FORALL  EXISTS,  like in:
+   I  |=  p & (q v -r)     (the interpretation I satisfies the formula p & (q v -r)  ).
+   You can write subindices using "_". For example write x_i to denote x-sub-i.
+--------------------------------------------------------------------------------------------------
+_____________________________________________________________________________________
+_____________________________________________________________________________________
+
+FIRST-ORDER LOGIC:
+_____________________________________________________________________________________
+_____________________________________________________________________________________
+
+
+Problem 4. (3 points).                                   @n@nota4:
+
+4a)
+Let F be the following first-order formula (FOL), that contains the subformula G:
+
+   F = Ax -p(x,x)   &   AxAyAz( p(x,y) & p(y,z) -> p(x,z) )    &    AxEy p(x,y)   &   G
+    
+Let I1 and I2 be two interpretations, where D_I1 = N (the natural numbers), and
+D_I2 = Z (the integer numbers).
+
+Define the formula G, and the binary predicate p, in such a way that
+F is true in I1, and F is false in I2.
+
+Note: the predicate p must be the same "boolean function" in both interpretations.
+
+
+Answer:
+
+In my answer, predicate p(x,y) indicates x < y. Then, the G formula I propose is: G = ExAy -p(y,x).
+
+4b)
+Is the following first-order formula (FOL) F satisfiable? Answer YES or NO and prove it.
+
+   F = Ax Ey p(x,y)  &  Ey Ax -p(x,y)  &  Ax p(x,x)
+
+
+Answer:
+
+No, it is not satisfiable. We can observe that if every x satisfies p(x,x), then Ey Ax -p(x,y) can not be satisfied, since x = y will always be true and thus not satisfy the atom.
+
+Nevertherless, we can prove it by transforming F to a set of clausal forms S and then applying resolution. 
+We will got that F is satisfiable 	IFF 
+		 S it is satisfiable	IFF
+		 [] doesn't belong to ResFact(S)
+
+S: {
+	1. Ax Ey p(x,y) = p(x,fy(x))
+	2. Ey Ax -p(x,y) = -p(x,cy)
+	3. Ax p(x,x) = p(x,x)
+   }
+
+We apply resolution between 2. and 3. :
+
+        -p(x,cy)           p(x,x)
+	---------------------------    with mgu {x=cy}
+	           []
+
+Then, F is proved to be not satisfiable.
+
+
+------------------------------------------------------------------------------------
+
+Problem 5. (3 points).                                   @n@nota5:
+
+5a)
+Consider the following formula of FOL:
+
+    Ax       ( p( x, x ) )
+     &
+    Ax Ay    ( p( x, y ) -> p( y, x ) )
+     &
+    Ax Ay Az ( p( x, y ) & p( y, z ) -> p( x, z ) )
+
+Give a model of this formula with domain IN (the natural numbers) in which p is 
+*not* equality or the constant 1 (TRUE) predicate.
+
+
+Answer:
+
+The model proposed could have the following predicate p definition different from equiality and TRUE:
+	
+	- p(x,y) = 1 IFF x+y gives a even result.
+
+5b)
+Prove that the following first-order formula with equality (FOLE) is satisfiable:
+
+    Ey Az ( (Ax f(x,y) = x) & -(f(y,y) = g(z,z)) )
+
+
+Answer:
+
+To prove it is satisfiable, I propose the following model:
+
+	- D_I = { natural numbers (N) }
+	- f(x,y) = x*y
+	- g(x,y) = x+y
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Problem 6. (4 points).                                   @n@nota6:
+
+Formalize and prove by resolution that sentence E is a logical consequence of the first four.
+   A. Mary has a daughter who is nice and studious
+   B. Studious people are always flamboyant or shy
+   C. Nice people are never shy
+   D. No one who is nice has an flamboyant child
+   E. Mary is not nice
+
+Use the following vocabulary:
+   m        meaning "Mary"
+   dau(x,y) meaning "x is the daughter of y"
+   nic(x)   meaning "x is nice"
+   stu(x)   meaning "x is studious"
+   fla(x)   meaning "x is flamboyant"
+   shy(x)   meaning "x is shy"
+
+
+Answer:
+
+Fomalization:
+
+A. Ex ( dau(x,m) & nic(x) & stu(x) )
+B. Ax ( stu(x) -> fla(x) v shy(x) )
+C. Ax ( nic(x) -> -shy(x) )
+D. Ax ( nic(x) -> -Ey ( daugther(y,x) & fla(y) ) )
+E. -nic(m)
+
+Now we get the clausal form of the previous formalizations:
+
+a1. dau(cx,m)
+a2. nic(cx)
+a3. stu(cx) 
+b. -stu(x) v fla(x) v shy(x) 
+c. -nic(x) v -shy(x)
+d. -nic(x) v -dau(y,x) v -fla(y)
+e. nic(m) 					# this is indeed -e, since we want to prove [] belongs to ResFact(S), being S = {a & b & c & d & -e}
+
+Resolution:
+
+N     | WITH	      | MGU	       | RESULT
+-----------------------------------------------------------------
+1.	e. with d.	{x=m}		-dau(y,m) v -fla(y)
+2.	a1. with 1.	{y=cx}		-fla(cx) 
+3.	b. with 2.	{x=cx}		-stu(cx) v shy(cx)	
+4.	a3. with 3.	{}		shy(cx)
+5. 	c. with 4.	{x=cx}		-nice(cx)
+6. 	a2. with 5.	{}		[]
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------

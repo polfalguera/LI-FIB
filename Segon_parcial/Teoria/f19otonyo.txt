@@ -1,0 +1,69 @@
+Exercise 4.
+
+(a). Consider binary function symbols s and p and the first-order interpretations I and I 0 where DI is the set of rational numbers and I 0 where DI 0 is the set of real numbers and where in both cases, s
+is interpreted as the sum and p is interpreted as the product. Write the simplest possible formula F in first-order logic with equality using only the function symbols s and p (no other symbols) and the
+equality predicate =, such that F is true in one of the interpretations and false in the other one. Do not give any explanations. Hint: the square root of 2 is irrational.
+
+F = EyEz ( (Ax p(x,y) = x) & p(z,z) = s(y,y) )
+
+(b). Consider the two first-order formulas:
+
+F is ∀z (∃x p(x, z) ∧ ∃y p(z, y))
+G is ∃x ∃y ∀z (p(x, z) ∧ p(z, y))
+
+Do we have F |= G? Prove it.
+
+No. Here is a model I such that I |= F but I ¬|= G:
+
+	- D_I = {a,b}
+	- p(a,a) = 1
+	- p(a,b) = 0
+	- p(b,a) = 0
+	- p(b,b) = 1
+
+
+Exercise 5.
+										      ANSWER
+------------------------------------------------------------------------------------------------
+A) There are infinitely many different formulas, even if there is only one predicate symbol.	T	
+B) F |= G iff F ∧ ¬G is unsatisfiable.							T
+C) F is a tautology iff ¬F is unsatisfiable.							T
+D) Given I and F, it is decidable in linear time whether I |= F.					F
+E) Given I and F, it is decidable whether I |= F.						F
+F) Given F, it is decidable in polynomial time whether F is satisfiable.				F
+G) Given F, it is decidable whether F is satisfiable.						F
+
+
+Exercise 6.
+
+Formalize the following five sentences by five first-order formulas F1, F2, F3, F4, F5. Is F1 ∧ F2 ∧ F3 ∧ F4 ∧ F5 satisfiable? Prove it.
+
+F1: If a person has a bad health he/she cannot run fast.
+F2: Friends of sports professionals do not smoke.
+F3: Piqué is a sports professional and Shakira is his friend.
+F4: Smokers have a bad health.
+F5: Shakira cannot run fast.
+
+Predicates:
+	- badHealth(x) 	means "x has bad health"
+	- runf(x)	means "x can run fast"
+	- prof(x)	means "x is a sports professional"
+	- friend(x,y)	means "x is friend of y"
+	- smoker(x)	means "x is a smoker"
+
+Formalization:
+
+f1. Ax ( badHealth(x) --> -runf(x) )
+f2. Ax ( ( Ey prof(y) & friend(x,y) ) --> -smoker(x) )
+f3a. prof(Pique)
+f3b. friend(Pique,Shakira)
+f4. Ax ( smoker(x) --> badHealth(x) )
+f5. -runf(Shakira)
+
+Di = {p, s}
+piqueI = p, shakiraI = s
+friendI (s, s) = 1, friendI (s, p) = 1, friendI (p, s) = 1, friendI (p, p) = 1
+badhealthI (p) = 0, badhealthI (s) = 0
+runf astI (p) = 1, runf astI (s) = 0
+profI (p) = 1, profI (s) = 1
+smokerI (p) = 0, smokerI (s) = 0

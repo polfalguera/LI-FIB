@@ -1,0 +1,124 @@
+Exercise 4. For 4a and 4b, just write the simplest and cleanest possible formula F. Use no more predicate or function symbols than just p. Give no explanations.
+
+(4.a) Write a satisfiable first-order formula F, using only a binary predicate p, such that all models I of F have an infinite domain DI.
+
+Formula = Ax -p(x,x) & Ax Ay Az ( p(x,y) & p(y,z) => p(x,z) ) & Ax Ey p(x,y)
+
+(4.b)  Write a satisfiable formula F of first-order logic with equality, using only a unary predicate p,such that F expresses that there is a single element satisfying p, that is, all models I of F have asingle (unique) element e in its domain DI such that pI (e) = 1.
+
+Ex ( p(x) & Ay ( -eq(x,y) ==> -p(y) ) )
+
+
+
+Exercise 5. Let F be the first-order formula ∃x∀y∃z ( p(z, y) ∧ ¬p(x, y) ).
+
+(5.a) Give a model I of F with DI = {a, b, c}.
+	p(a,a) = 0
+	p(a,b) = 0
+	p(a,c) = 0
+	p(b,a) = 1
+	p(b,b) = 1
+	p(b,c) = 1
+	p(c,a) = no matter
+	p(c,b) = no matter
+	p(c,c) = no matter
+
+(5.b) Is it true that F |= ∀x p(x, x)?
+
+No. That  would mean that all model I of F should be model of ∀x p(x, x) and thats not true, since the model of F stated in the previous section is not a model for ∀x p(x, x).
+
+(5.c) Is there any model of F with a single-element domain?
+
+No. We have the common "always false" conjunction p(z,y) ∧ -p(x,y), that taking into account a model with just an element e in its domain, x = y = z = e, so to sitisfy p(e,e) ∧ ¬p(e,e) we should define p(e,e) = 1 and p(e,e) = 0 and thats contradictory.
+
+Exercise 6. Formalize and prove by resolution that sentence F is a logical consequence of the  first five:
+
+A: All people that have electric cars are ecologists.
+B:  If someone has a grandmother, then that someone has a mother whose mother is that grandmother.
+C:  A person is an ecologist if his/her mother is an ecologist.
+D:    Mary is John’s grandmother.
+E:    Mary has an electric car.
+F:    John is an ecologist.
+
+Predicates:
+hasECar(x) 	  - "x has an electric car"
+isEcologist(x)    - "x is ecologist"
+mother(x,y)	  - "y is the mother of x"
+grandmother(x,y)  - "y is the grandmother of x"
+
+(a) Ax ( hasECar(x) => isEcologist(x) ) |->| Ax ( -hasECar(x) ∨ isEcologist(x) )
+
+(a1) -hasECar(x) ∨ isEcologist(x)
+
+(b) Ax Ay ( grandmother(x,y) => Ez ( mother(x,z) & mother(z,y) ) )
+
+(b1) ¬grandmother(x,y) ∨ mother(x,fz(x,y))
+(b2) ¬grandmother(x,y) ∨ mother(f(x,y),y)
+
+(c) Ax ( Ey ( mother(x,y) ∧ isEcologist(y) ) => isEcologist(x) )
+
+(c1) -mother(x,y) ∨ -isEcologist(y) ∨ isEcologist(x)
+
+(d) grandmother(John,Mary)
+
+(e) hasECar(Mary)
+
+(f) isEcologist(John)
+
+-(f) = (f1) = -isEcologist(John)
+
+RESOLUTION:
+
+(a1) -hasECar(x) ∨ isEcologist(x)
+(b1) ¬grandmother(x,y) ∨ mother(x,fz(x,y))
+(b2) ¬grandmother(x,y) ∨ mother(fz(x,y),y)
+(c1) ¬mother(x,y) ∨ ¬isEcologist(y) ∨ isEcologist(x)
+(d) grandmother(John,Mary)
+(e) hasECar(Mary)
+(f1) ¬isEcologist(John)
+
+							WITH:			MGU:
+1. isEcologist(Mary)					a1. with e.		{x=Mary}
+2. mother( John,fz(John,Mary) )				d with b1		{x=John,y=Mary}
+3. mother( fz(John,Mary),Mary )       			d with b2		{x=John,y=Mary}
+4. ¬isEcologist(fz(John,Mary)) v isEcologist(John)	2. with c1		{x=John,y=fz(John,Mary)}
+5. ¬isEcologist(fz(John,Mary))				4. with f1		{}
+6. ¬isEcologist(Mary) ∨ isEcologist(fz(John,Mary))	3. with c1		{x=fz(John,Mary),y=Mary}
+7. ¬isEcologist(Mary)					5. with 6.		{}
+8. []							1. with 7.		{}
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

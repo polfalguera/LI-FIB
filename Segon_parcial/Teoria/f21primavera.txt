@@ -1,0 +1,125 @@
+======================================================================================
+Lógica en la Informática / Logic in Computer Science
+June 17th, 2021. Time: 2h30min. No books or lecture notes allowed.
+
+Note on evaluation: nota(propositional logic) = max( nota(Problems 1,2,3,4), nota(partialExam) )
+                    nota(first-order logic)   = eval(Problems 5,6,7).
+
+-Insert your answers on the dotted lines ... below, and only there.
+-The number of dots in a dotted line does NOT indicate the number of items to fill in.
+-Do NOT modify the problems or the @nota lines.
+-When finished, upload this file with the same name: exam.txt
+
+======================================================================================
+
+Use the text symbols:     &    v   -   |=       for     AND  OR  NOT  and  "SATISFIES",   like:
+      I  |=  p & (q v -r)     (the interpretation I satisfies the formula p & (q v -r)  ).
+
+======================================================================================
+
+=======================================================================
+FIRST-ORDER LOGIC.
+
+
+Problem 5. (3 points).                                   @n@nota5:
+For each one of the following statements, indicate if it is true(T) or false(F) for first-order logic.
+Give no explanations why. Below always F,G,H are formulas and I is an interpretation.
+
+ T  There are infinitely many different formulas, even if there is only one predicate symbol.
+ F  Given I and F, it is decidable in linear time whether I |= F.
+ F  Given I and F, it is decidable whether I |=  F.
+ F  Given F, it is decidable in polynomial time whether F is satisfiable.
+ F  Given F, it is decidable whether F is satisfiable.
+ T  F |= G iff F & -G is unsatisfiable.
+ T  F is a tautology  iff  -F is unsatisfiable.
+ F  Given F and G, it is co-semi-decidable whether  F |= G.
+ T  Given F and G, it is semi-decidable whether F and G are logically equivalent,
+ F  We can express with a formula F that all models of F have a domain of size at most 3.
+ T  Given a formula F and an interpretation I with domain D_I of size 4, it is decidable whether I |=  F.
+
+
+------------------------------------------------------------------------------------
+Problem 6. (3 points).                                   @n@nota6:
+6a) Is the formula  Ax ( -p(x,f(x))  &  -p(f(x),x)  &  ( Ey p(f(x),y)  v  Ez p(z,f(x)) )   )  satisfiable?  Prove it.
+
+MY ANSWER MODEL:
+	D_I = { natural numbers (N) }
+	f(x) = x + 1
+	p(x,y) = x+y mod 2 == 0
+
+
+yes. For example the following interpretation I is a model:
+        D_I = {a,b}
+        f_I(a) = a
+        f_I(b) = b    
+        p_I(a,a) = 0
+        p_I(a,b) = 1
+        p_I(b,a) = 1
+        p_I(b,b) = 0        Another model: the natural numbers with f the identity function and p >.
+
+6b) 
+Let I1 and I2 be first-order interpretations with domains D_I1 = Q (the rationals) and D_I2 = R (the reals).
+In both interpretations, the unary function symbol "square" is interpreted as square_I(x) = x*x. 
+Write a formula F in FOLE (first-order logic with equality), using no other predicate or function symbols
+apart from square, such that F is true in one of the interpretations and false in the other one.
+
+F = Ax Ey  square_I(square_I(y)) = square(x)
+
+This means " every square number x has a fourth root y", and this is true in R but false in Q.
+
+
+
+------------------------------------------------------------------------------------
+Problem 7. (4 points).                                   @n@nota7:
+Formalize and prove by resolution that sentence F is a logical consequence of the first five:
+
+A: John eats all kind of food.
+B: If a person eats something that kills, then that person is dead
+C: Everything that does not kill and is eaten by someone is food
+D: Mary is not dead
+E: Mary eats peanuts
+F: John eats peanuts.
+
+Predicates:
+    kills(x) //x kills
+    dead(x) //x is dead
+    eats(x,y) //x eats y
+    food(x) //x is food
+    
+Formalization:
+A. Ax ( food(x) --> eats(John,x) )
+B. Ax Ey ( eats(x,y) & kills(y) --> dead(x) )
+C. Ax ( ( Ey eats(y,x)  & -kills(x) ) --> food(x) )
+D. -dead(Mary)
+E. eats(Mary,Peanuts)
+F. eats(John,Peanuts)
+
+Let's transform the previous atoms into their clausal form:
+
+a. -food(x) v eats(John,x)
+b. -eats(fy(x),y) v -kills(y) v dead(fy(x)) 
+c. -eats(y,x) v kills(x) v food(x) 
+d. -dead(Mary)
+e. eats(Mary,Peanuts)
+f. -eats(John,Peanuts) %% = -f
+
+We want to proof that:
+a & b & c & d & e |= f			IFF
+a & b & c & d & e & -f INSAT		IFF
+S = {a & b & c & d & e & -f} INSAT	IFF
+[] belongs to ResFact(S)
+
+Resolution
+
+N	WITH		MGU				NEW CLAUSE
+1.	e. with b.	{fy(x)=Mary,y=Peanuts}		-kills(Peanuts) v dead(Mary)
+2.	1. with d.	{}				-kills(Peanuts)
+3. 	c. with 2.	{x=Peanuts}			-eats(y,Peanuts) v food(Peanuts)
+4.	3. with e.	{y=Mary}			food(Peanuts)
+5.	4. with a.	{x=Peanuts}			eats(John,Peanuts)
+6.	5. with f.	{}				[]
+
+-----------------------------------------------------------------------
+
+
+

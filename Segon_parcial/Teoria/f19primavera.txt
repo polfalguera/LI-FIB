@@ -1,0 +1,112 @@
+Exercise 4.  Formalize and prove by resolution that sentence D is a logical consequence of the other three. Use
+(among others) a binary predicate symbol OwnsCar(x, y) meaning “x owns the car y”.
+
+	A: Paul McCartney is rich.
+	B: All cars with diesel engines smell badly.
+	C: Rich people’s cars never smell badly.
+	D: Paul McCartney owns no diesel car.
+
+Predicates: 
+
+	OwnsCar(x,y) 	meaning "x owns the car y"
+	rich(x)	 	meaning "x is rich"
+	diesel(x)	meaning "x is a diesel car"
+	smells(x)	meaning "x is a car that smells badly"
+
+Formalize:
+
+A. rich(Paul)
+B. Ax ( diesel(x) --> smells(x) )
+C. Ax Ay ( rich(x) & OwnsCar(x,y) --> -smells(y) )
+D. -Ex ( OwnsCar(Paul,x) & diesel(x) ) -- Toggled --> Ex ( OwnsCar(Paul,x) & diesel(x) )
+
+Clausal form:
+
+a. rich(Paul)
+b. -diesel(x) v smells(x)
+c. -rich(x) v -OwnsCar(x,y) v -smells(y)
+d1. OwnsCar(Paul,cx)
+d2. diesel(cx)
+
+Resolution
+N	WITH			MGU				NEWCLAUSE
+-----------------------------------------------------------------------------------------
+1.	d2. with b.		{x=cx}				smells(cx)
+2.	1. with c.		{y=cx}				-rich(x) v -OwnsCar(x,cx)
+3.	d1. with 2.		{x=Paul}			-rich(Paul)
+4.	3. with a.		{}				[]
+
+Exercise 5.
+‎
+(a). Consider a binary function symbol s and the following first-order interpretations I and I′:
+I: where DI is the set of natural numbers and where sI (n, m) = n + m.
+I′: where DI′ is the set of integer numbers and where sI′(n, m) = n + m.
+
+Write the simplest possible formula F in first-order logic with equality using only the function symbol
+s and the equality predicate = (no other symbols), such that F is true in one of the interpretations
+and false in the other one. Do not give any explanations.
+
+My formula: Ax Ey ( -(x=y) & s( s(x,y),x )=x )
+
+Their formula: AxAyEz s(x,z) = y
+
+
+(b). Consider binary function symbols s and p and the first-order interpretations I and I′ where DI
+is the set of real numbers and I′ where DI′ is the set of complex numbers and where in both cases, s is
+interpreted as the sum (as before) and p is interpreted as the product. Same question as 5A: complete
+the formula F below, using only symbols s and p:
+
+F : ∃y∃z ( ( ∀x p(x, y) = s(s(p(x,y),p(x,y)),x) ) ∧ p(z, z) = s(y, y) )
+
+
+Exercise 6. 
+
+(a). Let F be the formula ∀x p(c, x)∧ ∃y ( q(y)∨ ¬p(y, y) ). Let G be the formula ∃z ( p(z, c) ∨ q(z) ).
+Do we have F |= G? Prove it.
+
+We want to prove F |= G, that means that all model of F is model of G, what at the same time means that F & -G can not be satisified since the previous statement would not be achieved.
+
+To see if F & -G is unsat, we get their clausal forms as a set S and we apply ResFact(S), waiting the [] to appear thus will mean the formula is unsat thus F |= G.
+
+f1. p(c, x)
+f2. q(cy) v -p(cy, cy)
+g1. -p(z, c)
+g2. -q(z)
+
+Resolution:
+N	WITH			MGU			NEWCLAUSE
+-------------------------------------------------------------------
+1. 	f1. with g1.		{x=c,z=c}		[]	
+
+
+(b). Let F be the formula ∀x ( p(x, x) ∧ ¬p(x, f(x)) ∧ ¬p(x, g(x)) ∧ ¬p(f(x), g(x)) ).
+Is F satisfiable? If so, give a model with the smallest possible sized domain. If not, prove unsatisfiability.
+
+	- D_I = {a,b,c}
+	------------
+	- f(a) = b 
+	- f(b) = c
+	- f(c) = a
+	------------
+	- g(a) = c
+	- g(b) = a
+	- g(c) = b
+	------------
+	- p(a,a) = 1
+	- p(a,b) = 0
+	- p(a,c) = 0
+	- p(b,a) = 0
+	- p(b,b) = 1
+	- p(b,c) = 0
+	- p(c,a) = 0
+	- p(c,b) = 0
+	- p(c,c) = 1 
+
+
+
+
+
+
+
+
+

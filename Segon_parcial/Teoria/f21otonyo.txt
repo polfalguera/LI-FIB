@@ -1,0 +1,128 @@
+--------------------------------------------------------------------------------------------------
+Logic in Computer Science, January 13th, 2021. Time: 2h30min. No books or lecture notes allowed.
+--------------------------------------------------------------------------------------------------
+Note on evaluation: eval(propositional logic) = max(eval(Problems 1,2,3), eval(partial exam))
+                    eval(first-order logic)   = eval(Problems 4,5,6).
+
+-Insert your answers on the dotted lines ... below, and only there.
+-Do NOT modify the problems or the @nota lines.
+-When finished, upload this file with the same name: exam.txt
+-Use the text symbols:     &     v    -       ->          |=        A       E
+   for                    AND   OR   NOT   IMPLIES   "SATISFIES"  FORALL  EXISTS,  like in:
+   I  |=  p & (q v -r)     (the interpretation I satisfies the formula p & (q v -r)  ).
+   You can write subindices using "_". For example write x_i to denote x-sub-i.
+--------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------
+-----------------------     First-Order Logic:   -------------------------------------------------
+--------------------------------------------------------------------------------------------------
+
+
+Problem 4. (3 points).                                   @n@nota4:
+
+John has written a C++ program P that takes as input an arbitrary first-order formula F.  He
+says that, if F is a tautology, P always outputs "yes" after a finite amount of time, and if F
+is NOT a tautology, P outputs "no" or it does not terminate.  Is this possible?  If this is not
+possible, explain why. If it is possible, explain how and why P would work.
+
+Yes. This problem (TAUT in FOL) is semi-decidable. How?
+We have   F taut   IFF   -F unsat   IFF   S=clausalForm(-F) unsat   IFF   the empty clause [] is in ResFact(S).
+John's semi-decision procedure P can compute S and then start computing the sets S0,S1,S2,... whose union is ResFact(S).
+If F is a tautology,     it wil always terminate (with output "yes"), because then [] is in Si for some i.
+If F is not a tautology, [] will never appear, and we terminate (with "no") only if ResFact(S) is finite.
+
+--------------------------------------------------------------------------------------------------
+
+Problem 5. (3 points).                                   @n@nota5:
+
+5a) Is the formula Ax Ey ( p(f(x),y) & -p(x,y) ) satisfiable? Prove it.
+
+Yes. The following interpretation is a model:
+
+	- D_I  = {a,b}
+	- f(a) = b
+	- f(b) = a
+	- p(a,a) = 0
+	- p(a,b) = 1
+	- p(b,a) = 1
+	- p(b,b) = 0
+
+- Always pick x=y.
+
+5b) Are the following two formulas F and G logically equivalent? Prove it as simply as you can.
+F:   Ax Ey ( p(f(x),y) & -p(x,y) )
+G:   Ey Ax ( p(f(x),y) v -p(x,y) )
+
+No they are not equivalent. Here is a model for G but not for F:
+	
+	- D_I = {a}
+	- f(a) = a
+	- p(a,a) = 1
+
+--------------------------------------------------------------------------------------------------
+
+Problem 6. (4 points).                                   @n@nota6:
+
+Formalise the following sentences in first-order logic and prove by resolution that the last
+one (g) is a logical consequence of the others a & b & c & d & e & f. 
+
+a: If a king is magic then he steals from all his citizens.
+b: A king is magic if he is the son of a magic king.
+c: Johnny is a magic king.
+d: Phil is the son of Johnny.
+e: Mary is a citizen of Phil.
+f: Phil does not steal from Mary.
+g: This year FC Barcelona will win the League.
+
+Predicates:
+	magic(x)  	:- means "x is a magic king"
+	citizen(x,y) 	:- means "x is citizen of y"
+	steals(x,y)	:- means "x steals from y"
+	sonOf(x,y)	:- means "x is son of y"
+
+Answer: Obviously g has nothing to do with a-f. So the only way to that prove g is a logical 
+        consequence is to prove that a & b & c & d & e & f is unsatifsfiable.  Formalising:
+a. Ax (	magic(x) --> Ay ( citizen(y,x) --> steals(x,y) ) )
+b. Ax ( Ey ( magic(y) & sonOf(x,y) ) --> magic(x) )
+c. magic(Jonny)
+d. sonOf(Phil,Jonny)
+e. citizen(Mary,Phil)
+f. -steals(Phil,Mary)
+
+We transform them to clausal forms:
+
+a. Ax (	magic(x) --> Ay ( citizen(y,x) --> steals(x,y) ) )
+   Ax (	magic(x) --> Ay ( -citizen(y,x) v  steals(x,y) ) )
+   Ax (	-magic(x) v  Ay ( -citizen(y,x) v  steals(x,y) ) )
+	-magic(x)	  -citizen(y,x)	   steals(x,y)
+
+b. Ax ( Ey ( magic(y) & sonOf(x,y) ) --> magic(x) )
+   Ax ( -Ey  ( magic(y) & sonOf(x,y) ) v magic(x) )
+   Ax ( Ay  -( magic(y) & sonOf(x,y) ) v magic(x) )
+   Ax Ay (   -magic(y) v -sonOf(x,y)  v magic(x) )
+	     -magic(y)   -sonOf(x,y)    magic(x)
+
+
+Clauses:
+--------
+a. -magic(x) v -citizen(y,x) v steals(x,y)
+b. -magic(y) v -sonOf(x,y) v magic(x)
+c. magic(Jonny)
+d. sonOf(Phil,Jonny)
+e. citizen(Mary,Phil)
+f. -steals(Phil,Mary)
+
+Resolution:
+-----------
+
+N	WITH		MGU			NEWCLAUSE
+1.	c. with b.	{y=Jonny}		-sonOf(x,Jonny) v magic(x)
+2.	d. with 1.	{x=Phil}		magic(Phil)
+3.	2. with a.	{x=Phil}		-citizen(y,Phil) v steals(Phil,y)
+4.	e. with 3.	{y=Mary}		steals(Phil,Mary)
+5.	4. with f.	{}			[]	         
+	
+	
+
+--------------------------------------------------------------------------------------------------
+
